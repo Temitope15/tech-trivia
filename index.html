@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tech Trivia</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f7ff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header {
+      text-align: center;
+      margin-top: 30px;
+      padding: 0 20px;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      color: #003366;
+      margin-bottom: 8px;
+    }
+
+    .header h3 {
+      font-size: 1rem;
+      color: #0077cc;
+      font-weight: normal;
+      letter-spacing: 1px;
+    }
+
+    .timer {
+      font-size: 1rem;
+      color: #0077cc;
+      background: #e0f0ff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      align-self: flex-end;
+      margin-right: 5%;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px 20px;
+      box-shadow: 0 10px 25px rgba(0, 85, 255, 0.15);
+      max-width: 650px;
+      width: 90%;
+      text-align: center;
+      margin: 20px auto;
+      transition: 0.3s ease-in-out;
+      position: relative;
+    }
+
+    .question {
+      font-size: 1.2rem;
+      color: #003366;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      margin: 15px 0;
+      color: #444;
+    }
+
+    .options div {
+      margin: 8px 0;
+      font-size: 1rem;
+    }
+
+    .answer {
+      display: none;
+      margin-top: 25px;
+      background: #e6f3ff;
+      border-left: 5px solid #0077cc;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      color: #004080;
+      position: relative;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .answer::before {
+      content: "✅";
+      position: absolute;
+      left: -30px;
+      font-size: 1.2rem;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      background-color: #0077cc;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .timeup {
+      color: #cc0000;
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 1rem;
+    }
+
+    @media screen and (max-width: 600px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .header h3 {
+        font-size: 0.95rem;
+      }
+
+      .question {
+        font-size: 1rem;
+      }
+
+      .options div {
+        font-size: 0.95rem;
+      }
+
+      .answer {
+        font-size: 1rem;
+      }
+
+      button {
+        font-size: 0.95rem;
+        padding: 10px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🎯 Tech Trivia</h1>
+    <h3>TechyJaunt X Kaanch Meetup, Enugu</h3>
+  </div>
+
+  <div class="timer" id="timer">⏳ 30s</div>
+
+  <div class="card">
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="timeup hidden" id="timeup">⏰ Time's up!</div>
+    <div class="answer" id="answer"></div>
+
+    <button id="checkBtn" onclick="showAnswer()">Check Answer</button>
+    <button id="nextBtn" class="hidden" onclick="next()">Next</button>
+  </div>
+
+
+  <script>
+    const data = [
+      {
+        q: "You get paid through an app. You don’t know how the money moved, but someone built the system that made it happen, securely and silently. Who did that?",
+        options: ["A. UI Designer", "B. Backend Developer", "C. Blockchain Developer", "D. QA Tester"],
+        answer: "C. Blockchain Developer"
+      },
+      {
+        q: "Which of these roles is most likely to write something you can’t “see,” but your app can “read” and “follow” automatically?",
+        options: ["A. Smart Contract Developer", "B. Web Designer", "C. Frontend Engineer", "D. Technical Writer"],
+        answer: "A. Smart Contract Developer"
+      },
+      {
+        q: "Which tech role helps companies avoid being hacked, exposed, or digitally robbed?",
+        options: ["A. Blockchain Developer", "B. Cybersecurity Specialist", "C. DevOps Engineer", "D. Software Tester"],
+        answer: "B. Cybersecurity Specialist"
+      },
+      {
+        q: "What was the first search engine on the internet?",
+        options: ["A. Google", "B. Yahoo", "C. Archie", "D. Ask Jeeves"],
+        answer: "C. Archie"
+      },
+      {
+        q: "What does the “.com” at the end of a website mean?",
+        options: ["A. Commercial", "B. Communication", "C. Company", "D. Computer"],
+        answer: "A. Commercial"
+      },
+      {
+        q: "Which career is responsible for designing the logic of computer programs?",
+        options: ["A. Software Engineer", "B. Product Designer", "C. Marketing Manager", "D. Support Agent"],
+        answer: "A. Software Engineer"
+      },
+      {
+        q: "A product is beautiful. The code is flawless. But no one knows it exists. Who failed at their job?",
+        options: ["A. DevOps Engineer", "B. Technical Writer", "C. Digital Marketer", "D. Software Engineer"],
+        answer: "C. Digital Marketer"
+      },
+      {
+        q: "You’re told that “code is law.” In what career would that phrase most likely be part of your daily life?",
+        options: ["A. Cybersecurity Analyst", "B. Blockchain Developer", "C. UI Designer", "D. Web Developer"],
+        answer: "B. Blockchain Developer"
+      },
+      {
+        q: "Which role is likely to be familiar with terms like “consensus,” “gas fee,” and “decentralization”?",
+        options: ["A. Mobile App Developer", "B. Backend Developer", "C. Blockchain Developer", "D. QA Tester"],
+        answer: "C. Blockchain Developer"
+      },
+      {
+        q: "You see a job titled 'DevOps Engineer.' You guess: they probably…",
+        options: ["A. Design web pages", "B. Manage the product team", "C. Connect development and operations", "D. Test mobile apps"],
+        answer: "C. Connect development and operations"
+      },
+      {
+        q: "This person doesn’t build products, but they explain them so well that even old people can use them. Who is this?",
+        options: ["A. Technical Writer", "B. Cybersecurity Specialist", "C. UI Designer", "D. DevOps Engineer"],
+        answer: "A. Technical Writer"
+      },
+      {
+        q: "A friend says they “build things for the web,” but you never see their work directly on the screen. What do they likely do?",
+        options: ["A. UI Designer", "B. Frontend Developer", "C. Backend Developer", "D. Technical Writer"],
+        answer: "C. Backend Developer"
+      }
+    ];
+
+   let index = 0;
+  let timer;
+  let timeLeft = 30;
+
+  const tickSound = document.getElementById('tickSound');
+  const correctSound = document.getElementById('correctSound');
+  const timeoutSound = document.getElementById('timeoutSound');
+  const finishSound = document.getElementById('finishSound');
+
+  function startTimer() {
+    timeLeft = 30;
+    document.getElementById('timer').textContent = `⏳ ${timeLeft}s`;
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById('timer').textContent = `⏳ ${timeLeft}s`;
+      tickSound.play().catch(() => {}); // prevent autoplay issues
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        document.getElementById('timeup').classList.remove('hidden');
+        timeoutSound.play();
+      }
+    }, 1000);
+  }
+
+  function showQuestion() {
+    clearInterval(timer);
+    document.getElementById('question').innerText = data[index].q;
+    document.getElementById('options').innerHTML = data[index].options.map(opt => `<div>${opt}</div>`).join('');
+    document.getElementById('answer').style.display = 'none';
+    document.getElementById('nextBtn').classList.add('hidden');
+    document.getElementById('checkBtn').classList.remove('hidden');
+    document.getElementById('timeup').classList.add('hidden');
+    startTimer();
+  }
+
+  function showAnswer() {
+    clearInterval(timer);
+    correctSound.play();
+    document.getElementById('answer').style.display = 'block';
+    document.getElementById('answer').innerText = "✅ Answer: " + data[index].answer;
+    document.getElementById('checkBtn').classList.add('hidden');
+    document.getElementById('nextBtn').classList.remove('hidden');
+  }
+
+  function next() {
+    index++;
+    if (index < data.length) {
+      showQuestion();
+    } else {
+      finishSound.play();
+      document.querySelector('.card').innerHTML = "<h2 style='color:#0077cc;'>🎉 You’ve completed the trivia!</h2>";
+    }
+  }
+
+  showQuestion();
+  </script>
+</body>
+</html>
