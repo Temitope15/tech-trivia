@@ -239,61 +239,52 @@
       }
     ];
 
-   let index = 0;
-  let timer;
-  let timeLeft = 30;
+    let index = 0;
+    let timer;
+    let timeLeft = 30;
 
-  const tickSound = document.getElementById('tickSound');
-  const correctSound = document.getElementById('correctSound');
-  const timeoutSound = document.getElementById('timeoutSound');
-  const finishSound = document.getElementById('finishSound');
-
-  function startTimer() {
-    timeLeft = 30;
-    document.getElementById('timer').textContent = `⏳ ${timeLeft}s`;
-    timer = setInterval(() => {
-      timeLeft--;
+    function startTimer() {
+      timeLeft = 30;
       document.getElementById('timer').textContent = `⏳ ${timeLeft}s`;
-      tickSound.play().catch(() => {}); // prevent autoplay issues
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        document.getElementById('timeup').classList.remove('hidden');
-        timeoutSound.play();
-      }
-    }, 1000);
-  }
-
-  function showQuestion() {
-    clearInterval(timer);
-    document.getElementById('question').innerText = data[index].q;
-    document.getElementById('options').innerHTML = data[index].options.map(opt => `<div>${opt}</div>`).join('');
-    document.getElementById('answer').style.display = 'none';
-    document.getElementById('nextBtn').classList.add('hidden');
-    document.getElementById('checkBtn').classList.remove('hidden');
-    document.getElementById('timeup').classList.add('hidden');
-    startTimer();
-  }
-
-  function showAnswer() {
-    clearInterval(timer);
-    correctSound.play();
-    document.getElementById('answer').style.display = 'block';
-    document.getElementById('answer').innerText = "✅ Answer: " + data[index].answer;
-    document.getElementById('checkBtn').classList.add('hidden');
-    document.getElementById('nextBtn').classList.remove('hidden');
-  }
-
-  function next() {
-    index++;
-    if (index < data.length) {
-      showQuestion();
-    } else {
-      finishSound.play();
-      document.querySelector('.card').innerHTML = "<h2 style='color:#0077cc;'>🎉 You’ve completed the trivia!</h2>";
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('timer').textContent = `⏳ ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          document.getElementById('timeup').classList.remove('hidden');
+        }
+      }, 1000);
     }
-  }
 
-  showQuestion();
+    function showQuestion() {
+      clearInterval(timer);
+      document.getElementById('question').innerText = data[index].q;
+      document.getElementById('options').innerHTML = data[index].options.map(opt => `<div>${opt}</div>`).join('');
+      document.getElementById('answer').style.display = 'none';
+      document.getElementById('nextBtn').classList.add('hidden');
+      document.getElementById('checkBtn').classList.remove('hidden');
+      document.getElementById('timeup').classList.add('hidden');
+      startTimer();
+    }
+
+    function showAnswer() {
+      clearInterval(timer);
+      document.getElementById('answer').style.display = 'block';
+      document.getElementById('answer').innerText = "✅ Answer: " + data[index].answer;
+      document.getElementById('checkBtn').classList.add('hidden');
+      document.getElementById('nextBtn').classList.remove('hidden');
+    }
+
+    function next() {
+      index++;
+      if (index < data.length) {
+        showQuestion();
+      } else {
+        document.querySelector('.card').innerHTML = "<h2 style='color:#0077cc;'>🎉 You’ve completed the trivia!</h2>";
+      }
+    }
+
+    showQuestion();
   </script>
 </body>
 </html>
